@@ -11,16 +11,27 @@
         display: inherit;
         place-content: center;
         aspect-ratio: 1/1;
-        p {
+
+        .piece {
             font-size: 50px;
         }
+    
+        .whitePiece {
+            color: white
+        }
+    
+        .blackPiece {
+            color: black
+        }
     }
-}
 
-.white {
-    background-color: white;
-}
+    .whiteTile {
+        background-color: beige;
+    }
+    
+    .blackTile {
+        background-color: #7F3B1E;
+    }
 
-.black {
-    background-color: black;
+
 }
