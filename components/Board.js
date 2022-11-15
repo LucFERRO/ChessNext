@@ -213,35 +213,66 @@ export default function Board() {
     const [whiteTeam, setWhiteTeam] = useState(whiteTeamStartingPos)
     const [blackTeam, setBlackTeam] = useState(blackTeamStartingPos)
 
-    const testGlobal = (x, y) => {
-        Object.keys(whiteTeam).forEach(piece => {
-            if (x != whiteTeam[piece].x || y != whiteTeam[piece].y) return
-            console.log(piece, String.fromCharCode(whiteTeam[piece].symbol))
-            return String.fromCharCode(whiteTeam[piece].symbol)
-        })
-    }
+    // Piece position
 
     const piecePlacement = (x, y) => {
-
-        return Object.keys(whiteTeam).map( piece => {
-            if (x == whiteTeam[piece].x && y == whiteTeam[piece].y) return String.fromCharCode(whiteTeam[piece].symbol)
-            if (x == blackTeam[piece].x && y == blackTeam[piece].y) return String.fromCharCode(blackTeam[piece].symbol)
+        return Object.keys(whiteTeam).map(piece => {
+            if (x == whiteTeam[piece].x && y == whiteTeam[piece].y && !whiteTeam[piece].isDead) return String.fromCharCode(whiteTeam[piece].symbol)
+            if (x == blackTeam[piece].x && y == blackTeam[piece].y && !blackTeam[piece].isDead) return String.fromCharCode(blackTeam[piece].symbol)
         })
     }
 
-    // Déplacement de pièce 
+    // Piece movement 
 
-    // const movePiece = (piece, newX, newY) => {
-    //     const oldWhiteTeam = {...whiteTeam[piece]}
-    //     oldWhiteTeam[piece].x = newX
-    //     // oldWhiteTeam[piece].y = newY
+    const movePiece = (isWhite, piece, newX, newY) => {
+        if (isWhite) {
+            return setWhiteTeam({
+                ...whiteTeam,
+                [piece]: {
+                    ...whiteTeam[piece],
+                    x: newX,
+                    y: newY,
+                }
+            })
+        }
+        return setBlackTeam({
+            ...blackTeam,
+            [piece]: {
+                ...blackTeam[piece],
+                x: newX,
+                y: newY,
+            }
+        })
+    }
 
-    //     setWhiteTeam({ [piece].x: oldWhiteTeam})
-    // }
+    const movePiece2 = (team, setTeam, piece, newX, newY) => {
+        return setTeam({
+            ...team,
+            [piece]: {
+                ...team[piece],
+                x: newX,
+                y: newY,
+            }
+        })
+    }
 
-    
-    // movePiece('queen', 4,3)
-    // console.log('new',whiteTeam)
+    const killPiece = (team, setTeam, piece) => {
+        return setTeam({
+            ...team,
+            [piece]: {
+                ...team[piece],
+                isDead: true
+            }
+        })
+    }
+
+    useEffect(() => {
+        movePiece2(whiteTeam, setWhiteTeam, 'rook2', 4,4)
+        movePiece(true, 'queen', 2, 2)
+        movePiece(false,'knight1', 3,2)
+        killPiece(blackTeam, setBlackTeam, 'bishop2')
+    }, [])
+
 
     return (
         <div className={boardStyle.container}>
