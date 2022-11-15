@@ -204,6 +204,7 @@ export default function Board() {
     }
 
     const [selectedPiece, setSelectedPiece] = useState({
+        team: null,
         x: null,
         y: null,
         symbol: null,
@@ -266,6 +267,17 @@ export default function Board() {
         })
     }
 
+    const selectPiece = (x,y) => {
+        if (selectedPiece) {
+            movePiece(selectedPiece.team == 'white', selectedPiece.piece, x, y)
+            setSelectedPiece(null)
+        }
+        Object.keys(whiteTeam).map(piece => {
+            if (x == whiteTeam[piece].x && y == whiteTeam[piece].y && !whiteTeam[piece].isDead) return setSelectedPiece(Object.assign(whiteTeam[piece], {team:'white', piece}))
+            if (x == blackTeam[piece].x && y == blackTeam[piece].y && !blackTeam[piece].isDead) return setSelectedPiece(Object.assign(blackTeam[piece], {team:'black', piece}))
+        })
+    }
+
     useEffect(() => {
         movePiece2(whiteTeam, setWhiteTeam, 'rook2', 4,4)
         movePiece(true, 'queen', 2, 2)
@@ -273,13 +285,15 @@ export default function Board() {
         killPiece(blackTeam, setBlackTeam, 'bishop2')
     }, [])
 
+    useEffect( () => console.log(selectedPiece), [selectedPiece])
+
 
     return (
         <div className={boardStyle.container}>
 
             {array.map((row, i) => {
                 return array.map((column, i) => {
-                    return <div className={(7 - column + row) % 2 == 0 ? boardStyle.blackTile : boardStyle.whiteTile} data-x={column} data-y={7 - row}>
+                    return <div onClick={() => selectPiece(column, 7-row)} className={(7 - column + row) % 2 == 0 ? boardStyle.blackTile : boardStyle.whiteTile} data-x={column} data-y={7 - row}>
                         <p className={`${boardStyle.piece}`}>
                             {piecePlacement(column, 7 - row)}
                         </p>
